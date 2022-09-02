@@ -1,2 +1,2 @@
 # SpanishGoats
-CGS 4434 Semester Project
+CGS 4144 Semester Project
