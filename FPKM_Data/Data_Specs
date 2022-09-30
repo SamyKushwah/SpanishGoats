@@ -1,0 +1,2 @@
+The data in this file has been trimmed just down to the FPKM values. It appears there are 3 sets of A, B, and C goats. There are 6 files. The next step is to be able to merge or intersect these files in R.
+Now I have converted all the tables to xlsx files and used that in R. Their new names are data 1-6 for ease of use in R.
