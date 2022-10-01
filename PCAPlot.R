@@ -4,6 +4,7 @@ library(BiocManager)
 library(DESeq2)
 library(tidyverse)
 library(ggplot2)
+library(tibble)
 
 #loading the created expression matrix
 expressionMatrix <- read.csv("./expressionMatrix.csv", header = TRUE)
@@ -43,8 +44,13 @@ dds
 
 #setting the factor level for comparison from refernce 
 dds$treatment.ch1 <- relevel(dds$treatment.ch1, ref = "non transported goats")
-dds <- DESeq(dds)
-
+meta_matrix <- meta_matrix %>%
+  dplyr::mutate(
+    treatment.ch1 = factor(treatment.ch1, levels = c("non transported goats",
+                                                         "180 minutes of transportation",
+                                                         "30 minutes of transportation"))
+  )
+levels(meta_matrix$treatment.ch1)
 #plot object
 vds<-vst(dds, blind=FALSE)
 
@@ -55,6 +61,29 @@ plotPCA(vds, intgroup=c("treatment.ch1"))
 library(M3C)
 tsne(count_data, label=as.factor(dds$treatment.ch1))
 
+#volcano plot
+#doing the differential analysis and storing it
+dseq_obj <- DESeq(dds)
+dseq_results <- results(dseq_obj)
+head(dseq_results)
+
+#make dataset into data frame
+deseq_df <- dseq_results %>%
+  as.data.frame()
+head(deseq_df)
+
+#creating the volcano plot
+volcano_plot <- EnhancedVolcano::EnhancedVolcano(
+  deseq_df,
+  lab = rownames(deseq_df),
+  x = "log2FoldChange",
+  y = "padj",
+  pCutoff = 0.01 # Loosen the cutoff since we supplied corrected p-values
+)
+#plotting the volcano plot
+volcano_plot
+
+=======
 =======
 library("readxl")
 library("dplyr")
