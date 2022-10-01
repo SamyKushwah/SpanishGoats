@@ -150,3 +150,7 @@ plotPCA(vds, intgroup=c("treatment.ch1"))
 
 gene_names <- expression_matrix[,1, drop = FALSE]
 diff_exp <- cbind(gene_names, deseq_df)
+
+#find genes that have a p < .05
+
+significant_genes <- subset(diff_exp, pvalue < .05)
