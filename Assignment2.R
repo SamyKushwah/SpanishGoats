@@ -1,11 +1,11 @@
 library("readxl")
 library("dplyr")
 #read in all 6 tables
-my_data1 <- read_excel("./FPKM_Data/Data1.xlsx")
-View(my_data1)
+#my_data1 <- read_excel("./FPKM_Data/Data1.xlsx")
+#View(my_data1)
 
-my_data2 <- read_excel("./FPKM_Data/Data2.xlsx")
-View(my_data2)
+#my_data2 <- read_excel("./FPKM_Data/Data2.xlsx")
+#View(my_data2)
 
 my_data3 <- read_excel("./FPKM_Data/Data3.xlsx")
 View(my_data3)
@@ -20,21 +20,22 @@ my_data6 <- read_excel("./FPKM_Data/Data6.xlsx")
 View(my_data6)
 
 #merge all of the A, B and C tables in their own 3 tables
-tableA <- union_all(my_data1,my_data2)
-View(tableA)
+#tableA <- union_all(my_data1,my_data2)
+#View(tableA)
 
-tableB <- union_all(my_data4,my_data6)
+tableB <- union_all(my_data6,my_data4)
 View(tableB)
 
-tableC <- union_all(my_data3,my_data5)
+tableC <- union_all(my_data5,my_data3)
 View(tableC)
 
 #issues: the three tables don't seem to have any genes in common 
 #not sure what to do next
-mergeAB <- union_all(tableA, tableB)
-View(mergeAB)
+#mergeAB <- union_all(tableA, tableB)
+#View(mergeAB)
 
-mergeAll <- union_all(mergeAB, tableC)
+mergeAll <- union_all(tableB, tableC)
 View(mergeAll)
 
 expressionMatrix <- mergeAll[!duplicated(mergeAll$gene_id), ]
+View(expressionMatrix)
