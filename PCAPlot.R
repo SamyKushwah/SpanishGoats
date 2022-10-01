@@ -137,3 +137,16 @@ vds<-vst(dds, blind=FALSE)
 
 #plotting PCA
 plotPCA(vds, intgroup=c("treatment.ch1"))
+
+
+#======UMAP
+#library(umap)
+#expression_data <- expression_matrix[, grep("B1_fpkm_CL|C27_fpkm_MI",colnames(expression_matrix))]
+#data_umap <- umap(count_data)
+#View(data_umap)
+#plot(data_umap)
+
+#Table of differentially expressed genes 
+
+gene_names <- expression_matrix[,1, drop = FALSE]
+diff_exp <- cbind(gene_names, deseq_df)
