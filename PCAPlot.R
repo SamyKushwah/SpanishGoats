@@ -7,11 +7,11 @@ library(ggplot2)
 library(tibble)
 
 #loading the created expression matrix
-expressionMatrix <- read.csv("./expressionMatrix.csv", header = TRUE)
-View(expressionMatrix)
+expression_matrix <- read.csv("./expressionMatrix.csv", header = TRUE)
+View(expression_matrix)
 
 #creating count_data to be used in dds plot object
-count_data = expressionMatrix[, 2:55]
+count_data = expression_matrix[, 2:55]
 #making sure there are no NULL values in the matrix
 count_data[is.na(count_data)] = 0
 #scaling matrix to make sure there are no 0s by adding 1 to each value
@@ -83,8 +83,8 @@ volcano_plot <- EnhancedVolcano::EnhancedVolcano(
 #plotting the volcano plot
 volcano_plot
 
-=======
-=======
+#=======
+#=======
 library("readxl")
 library("dplyr")
 library(BiocManager)
@@ -93,11 +93,11 @@ library(tidyverse)
 library(ggplot2)
 
 #loading the created expression matrix
-expressionMatrix <- read.csv("./expressionMatrix.csv", header = TRUE)
-View(expressionMatrix)
+expression_matrix <- read.csv("./expressionMatrix.csv", header = TRUE)
+View(expression_matrix)
 
 #creating count_data to be used in dds plot object
-count_data = expressionMatrix[, 2:55]
+count_data = expression_matrix[, 2:55]
 #making sure there are no NULL values in the matrix
 count_data[is.na(count_data)] = 0
 #scaling matrix to make sure there are no 0s by adding 1 to each value

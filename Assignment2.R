@@ -24,22 +24,22 @@ View(my_data6)
 #tableA <- union_all(my_data1,my_data2)
 #View(tableA)
 
-tableB <- union_all(my_data6,my_data4)
-View(tableB)
+table_b <- union_all(my_data6,my_data4)
+View(table_c)
 
-tableC <- union_all(my_data5,my_data3)
-View(tableC)
+table_c <- union_all(my_data5,my_data3)
+View(table_c)
 
 #issues: the three tables don't seem to have any genes in common 
 #not sure what to do next
 #mergeAB <- union_all(tableA, tableB)
 #View(mergeAB)
 
-mergeAll <- union_all(tableB, tableC)
-View(mergeAll)
+merge_all <- union_all(table_b, table_c)
+View(merge_all)
 
-expressionMatrix <- mergeAll[!duplicated(mergeAll$gene_id), ]
-View(expressionMatrix)
+expression_matrix <- merge_all[!duplicated(merge_all$gene_id), ]
+View(expression_matrix)
 
 density_plot_data <- read_excel("./DensityPlotData.xlsx")
 View(density_plot_data)
