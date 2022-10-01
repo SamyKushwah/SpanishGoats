@@ -1,5 +1,6 @@
 library("readxl")
 library("dplyr")
+library("ggplot2")
 #read in all 6 tables
 #my_data1 <- read_excel("./FPKM_Data/Data1.xlsx")
 #View(my_data1)
@@ -39,3 +40,7 @@ View(mergeAll)
 
 expressionMatrix <- mergeAll[!duplicated(mergeAll$gene_id), ]
 View(expressionMatrix)
+
+density_plot_data <- read_excel("./DensityPlotData.xlsx")
+View(density_plot_data)
+ggplot(density_plot_data, aes(log2(x = x), fill = Sample)) + geom_density(alpha = .2)
