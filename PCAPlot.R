@@ -5,6 +5,7 @@ library(DESeq2)
 library(tidyverse)
 library(ggplot2)
 library(tibble)
+library(xlsx)
 
 #loading the created expression matrix
 expression_matrix <- read.csv("./expressionMatrix.csv", header = TRUE)
@@ -55,7 +56,7 @@ levels(meta_matrix$treatment.ch1)
 vds<-vst(dds, blind=FALSE)
 
 #plotting PCA
-plotPCA(vds, intgroup=c("treatment.ch1"))
+plotPCA(vds, intgroup=c("treatment.ch1")) + ggtitle("PCA Plot")
 
 #T-SNE Plot
 library(M3C)
@@ -152,5 +153,7 @@ gene_names <- expression_matrix[,1, drop = FALSE]
 diff_exp <- cbind(gene_names, deseq_df)
 
 #find genes that have a p < .05
-
 significant_genes <- subset(diff_exp, pvalue < .05)
+
+#export the differentially expressed genes into their own table
+write.xlsx(significant_genes, "significant_genes.xlsx")
