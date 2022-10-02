@@ -157,3 +157,49 @@ significant_genes <- subset(diff_exp, pvalue < .05)
 
 #export the differentially expressed genes into their own table
 write.xlsx(significant_genes, "significant_genes.xlsx")
+
+
+#Method 1: clustProfiler
+# http://guangchuangyu.github.io/2015/02/kegg-enrichment-analysis-with-latest-online-data-using-clusterprofiler/
+# https://learn.gencore.bio.nyu.edu/rna-seq-analysis/gene-set-enrichment-analysis/
+# https://www.genome.jp/kegg/catalog/org_list.html
+#library(clusterProfiler)
+library(clusterProfiler)
+library(DOSE)
+
+original_gene_list <- deseq_df$log2FoldChange
+names(original_gene_list) <- deseq_df$X
+gene_list<-na.omit(original_gene_list)
+gene_list = sort(gene_list, decreasing = TRUE)
+#need to change to entrez gene ID 
+#https://rdrr.io/bioc/MOMA/man/mapHugo.html
+
+#our gene IDs do not match what they expect
+
+chxKEGG = enrichKEGG(significant_genes, organism="chx")
+
+kk <- enrichKEGG(significant_genes, organism="chx", pvalueCutoff=0.05, pAdjustMethod="BH", 
+                 qvalueCutoff=0.1)
+
+head(summary(kk))
+
+library(enrichplot)
+
+organism = "human.db"
+BiocManager::install(organism, character.only = TRUE)
+library(organism, character.only = TRUE)
+
+
+gse <- gseGO(geneList=gene_list, 
+             ont ="ALL", 
+             keyType = "ENSEMBL", 
+             nPerm = 10000, 
+             minGSSize = 3, 
+             maxGSSize = 800, 
+             pvalueCutoff = 0.05, 
+             verbose = TRUE, 
+             OrgDb = organism, 
+             pAdjustMethod = "none")
+
+require(DOSE)
+dotplot(gse, showCategory=10, split=".sign") + facet_grid(.~.sign)
