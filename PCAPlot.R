@@ -159,26 +159,51 @@ significant_genes <- subset(diff_exp, pvalue < .05)
 write.xlsx(significant_genes, "significant_genes.xlsx")
 
 
+# Method 2 gProfiler2
+library(gprofiler2)
+
+gene_list_names <- significant_genes$gene_id
+
+gostres <- gost(query = gene_list_names, 
+                organism = "chircus", ordered_query = FALSE, 
+                multi_query = FALSE, significant = TRUE, exclude_iea = FALSE, 
+                measure_underrepresentation = FALSE, evcodes = FALSE, 
+                user_threshold = 0.05, correction_method = "g_SCS", 
+                domain_scope = "annotated", custom_bg = NULL, 
+                numeric_ns = "", sources = NULL, as_short_link = FALSE)
+
+gostplot(gostres, capped = TRUE, interactive = TRUE)
+
+
+
+
+
+
+
+
+
+#this method doesn't work
 #Method 1: clustProfiler
 # http://guangchuangyu.github.io/2015/02/kegg-enrichment-analysis-with-latest-online-data-using-clusterprofiler/
 # https://learn.gencore.bio.nyu.edu/rna-seq-analysis/gene-set-enrichment-analysis/
 # https://www.genome.jp/kegg/catalog/org_list.html
-#library(clusterProfiler)
+
 library(clusterProfiler)
 library(DOSE)
+library(MOMA)
 
-original_gene_list <- deseq_df$log2FoldChange
-names(original_gene_list) <- deseq_df$X
-gene_list<-na.omit(original_gene_list)
-gene_list = sort(gene_list, decreasing = TRUE)
+gene_list_names <- significant_genes$gene_id
+
+significant_genes_entrez <- mapHugo(gene_list_names)
+view(significant_genes_entrez)
+
 #need to change to entrez gene ID 
 #https://rdrr.io/bioc/MOMA/man/mapHugo.html
-
 #our gene IDs do not match what they expect
 
-chxKEGG = enrichKEGG(significant_genes, organism="chx")
+#chxKEGG = enrichKEGG(significant_genes_entrez, organism="chx")
 
-kk <- enrichKEGG(significant_genes, organism="chx", pvalueCutoff=0.05, pAdjustMethod="BH", 
+kk <- enrichKEGG(significant_genes_entrez, organism="chx", pvalueCutoff=0.05, pAdjustMethod="BH", 
                  qvalueCutoff=0.1)
 
 head(summary(kk))
@@ -188,7 +213,6 @@ library(enrichplot)
 organism = "human.db"
 BiocManager::install(organism, character.only = TRUE)
 library(organism, character.only = TRUE)
-
 
 gse <- gseGO(geneList=gene_list, 
              ont ="ALL", 
@@ -203,3 +227,7 @@ gse <- gseGO(geneList=gene_list,
 
 require(DOSE)
 dotplot(gse, showCategory=10, split=".sign") + facet_grid(.~.sign)
+
+
+
+
