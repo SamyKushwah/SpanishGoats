@@ -58,9 +58,15 @@ vds<-vst(dds, blind=FALSE)
 #plotting PCA
 plotPCA(vds, intgroup=c("treatment.ch1")) + ggtitle("PCA Plot")
 
+#=======
+#=======
+
 #T-SNE Plot
 library(M3C)
 tsne(count_data, label=as.factor(dds$treatment.ch1))
+
+#=======
+#=======
 
 #volcano plot
 #doing the differential analysis and storing it
@@ -140,15 +146,7 @@ vds<-vst(dds, blind=FALSE)
 plotPCA(vds, intgroup=c("treatment.ch1"))
 
 
-#======UMAP
-#library(umap)
-#expression_data <- expression_matrix[, grep("B1_fpkm_CL|C27_fpkm_MI",colnames(expression_matrix))]
-#data_umap <- umap(count_data)
-#View(data_umap)
-#plot(data_umap)
-
 #Table of differentially expressed genes 
-
 gene_names <- expression_matrix[,1, drop = FALSE]
 diff_exp <- cbind(gene_names, deseq_df)
 
@@ -159,11 +157,14 @@ significant_genes <- subset(diff_exp, pvalue < .05)
 write.xlsx(significant_genes, "significant_genes.xlsx")
 
 
-# Method 2 gProfiler2
+#Method 1 gProfiler2
 library(gprofiler2)
+#enrichement analysis using gprofiler
 
+#get all the gene_ids of the statistically signigicant genes
 gene_list_names <- significant_genes$gene_id
 
+#use gostres function to do enrichment analysis 
 gostres <- gost(query = gene_list_names, 
                 organism = "chircus", ordered_query = FALSE, 
                 multi_query = FALSE, significant = TRUE, exclude_iea = FALSE, 
@@ -172,6 +173,7 @@ gostres <- gost(query = gene_list_names,
                 domain_scope = "annotated", custom_bg = NULL, 
                 numeric_ns = "", sources = NULL, as_short_link = FALSE)
 
+#use gostplot to see anaylsis
 gostplot(gostres, capped = TRUE, interactive = TRUE)
 
 
@@ -183,19 +185,19 @@ gostplot(gostres, capped = TRUE, interactive = TRUE)
 
 
 #this method doesn't work
-#Method 1: clustProfiler
+#Method 2: clustProfiler
 # http://guangchuangyu.github.io/2015/02/kegg-enrichment-analysis-with-latest-online-data-using-clusterprofiler/
 # https://learn.gencore.bio.nyu.edu/rna-seq-analysis/gene-set-enrichment-analysis/
 # https://www.genome.jp/kegg/catalog/org_list.html
 
-library(clusterProfiler)
-library(DOSE)
-library(MOMA)
+#library(clusterProfiler)
+#library(DOSE)
+#library(MOMA)
 
-gene_list_names <- significant_genes$gene_id
+#gene_list_names <- significant_genes$gene_id
 
-significant_genes_entrez <- mapHugo(gene_list_names)
-view(significant_genes_entrez)
+#significant_genes_entrez <- mapHugo(gene_list_names)
+#view(significant_genes_entrez)
 
 #need to change to entrez gene ID 
 #https://rdrr.io/bioc/MOMA/man/mapHugo.html
@@ -203,30 +205,30 @@ view(significant_genes_entrez)
 
 #chxKEGG = enrichKEGG(significant_genes_entrez, organism="chx")
 
-kk <- enrichKEGG(significant_genes_entrez, organism="chx", pvalueCutoff=0.05, pAdjustMethod="BH", 
-                 qvalueCutoff=0.1)
+#kk <- enrichKEGG(significant_genes_entrez, organism="chx", pvalueCutoff=0.05, pAdjustMethod="BH", 
+#                 qvalueCutoff=0.1)
 
-head(summary(kk))
+#head(summary(kk))
 
-library(enrichplot)
+#library(enrichplot)
 
-organism = "human.db"
-BiocManager::install(organism, character.only = TRUE)
-library(organism, character.only = TRUE)
+#organism = "human.db"
+#BiocManager::install(organism, character.only = TRUE)
+#library(organism, character.only = TRUE)
 
-gse <- gseGO(geneList=gene_list, 
-             ont ="ALL", 
-             keyType = "ENSEMBL", 
-             nPerm = 10000, 
-             minGSSize = 3, 
-             maxGSSize = 800, 
-             pvalueCutoff = 0.05, 
-             verbose = TRUE, 
-             OrgDb = organism, 
-             pAdjustMethod = "none")
+#gse <- gseGO(geneList=gene_list, 
+#             ont ="ALL", 
+#             keyType = "ENSEMBL", 
+#             nPerm = 10000, 
+#             minGSSize = 3, 
+#             maxGSSize = 800, 
+#             pvalueCutoff = 0.05, 
+#             verbose = TRUE, 
+#             OrgDb = organism, 
+#             pAdjustMethod = "none")
 
-require(DOSE)
-dotplot(gse, showCategory=10, split=".sign") + facet_grid(.~.sign)
+#require(DOSE)
+#dotplot(gse, showCategory=10, split=".sign") + facet_grid(.~.sign)
 
 
 
