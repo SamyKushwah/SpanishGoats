@@ -6,13 +6,17 @@ library(tidyverse)
 library(ggplot2)
 library(tibble)
 library(xlsx)
+library(readr)
 
 #loading the created expression matrix
-expression_matrix <- read.csv("./expressionMatrix.csv", header = TRUE)
+#expression_matrix <- read.csv("./expressionMatrix.csv", header = TRUE)
+
+expression_matrix <- read_tsv("./GoatDataModified.tsv")
+
 View(expression_matrix)
 
 #creating count_data to be used in dds plot object
-count_data = expression_matrix[, 2:55]
+count_data = expression_matrix[, 2:54]
 #making sure there are no NULL values in the matrix
 count_data[is.na(count_data)] = 0
 #scaling matrix to make sure there are no 0s by adding 1 to each value
@@ -21,7 +25,7 @@ count_data[i1] <- count_data[i1] +1
 View(count_data)
 
 #loading in the metadata 
-meta_matrix <-read.csv("./gse_matrix.csv", header = TRUE)
+meta_matrix <-read.csv("./gse_matrix2.csv", header = TRUE)
 View(meta_matrix)
 #removing column for gene_id to make sure col and rows of the 2 matrices match up
 col_data = meta_matrix %>% remove_rownames %>% column_to_rownames(var="name")
