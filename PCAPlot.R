@@ -78,10 +78,14 @@ dseq_obj <- DESeq(dds)
 dseq_results <- results(dseq_obj)
 head(dseq_results)
 
+
+
 #make dataset into data frame
 deseq_df <- dseq_results %>%
   as.data.frame()
 head(deseq_df)
+
+write.xlsx(deseq_df, "deseq_df.xlsx")
 
 #creating the volcano plot
 volcano_plot <- EnhancedVolcano::EnhancedVolcano(
@@ -104,7 +108,7 @@ library(tidyverse)
 library(ggplot2)
 
 #loading the created expression matrix
-expression_matrix <- read.csv("./expressionMatrix.csv", header = TRUE)
+expression_matrix <- read_tsv("./GoatDataModified.tsv")
 View(expression_matrix)
 
 #creating count_data to be used in dds plot object
