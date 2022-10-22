@@ -3,7 +3,7 @@
 
 library("readxl")
 library(readr)
-library(dbplyr)
+library(dplyr)
 
 expression_matrix <- read_tsv("./GoatDataModified.tsv")
 meta_matrix <-read.csv("./gse_matrix2.csv", header = TRUE)
@@ -18,4 +18,13 @@ diff_exp <- cbind(gene_names, deseq_df)
 diff_exp <- arrange(diff_exp,pvalue)
 #Subset the first 5000 rows
 diff_exp <-head(diff_exp, 5000)
+#Join the genes from diff_exp to a gene matrix
+significant_genes <- data.frame(diff_exp$Gene)
+colnames(significant_genes)[1] = "Gene"
+
+expression_matrix_5000 <- inner_join(significant_genes,expression_matrix, by = "Gene")
+
+
+#Method 1:ConsensusClusterPlus
+library("ConsensusClusterPlus")
 
