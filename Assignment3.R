@@ -28,3 +28,11 @@ expression_matrix_5000 <- inner_join(significant_genes,expression_matrix, by = "
 #Method 1:ConsensusClusterPlus
 library("ConsensusClusterPlus")
 
+matrix_5000 <- expression_matrix_5000
+matrix_5000<-matrix_5000[,-1] # delete column of genes
+colnames(matrix_5000)<-NULL 
+matrix_5000 <- as.matrix(matrix_5000)
+
+rcc = ConsensusClusterPlus(matrix_5000,maxK=3,reps=100,pItem=0.8,pFeature=1,
+                           title="example",distance="pearson",clusterAlg="hc")
+resICL = calcICL(rcc,title="example")
