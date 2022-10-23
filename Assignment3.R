@@ -37,7 +37,7 @@ matrix_5000<-matrix_5000[,-1] # delete column of genes
 colnames(matrix_5000)<-NULL 
 matrix_5000 <- as.matrix(matrix_5000)
 
-rcc = ConsensusClusterPlus(matrix_5000,maxK=5,reps=1000,pItem=0.8,pFeature=1,
+rcc = ConsensusClusterPlus(matrix_5000,maxK=7,reps=1000,pItem=0.8,pFeature=1,
                            title="example",distance="pearson",clusterAlg="hc")
 #resICL = calcICL(rcc,title="example")
 calcICL(rcc,title="untitled_consensus_cluster")
@@ -45,7 +45,7 @@ calcICL(rcc,title="untitled_consensus_cluster")
 #Method 2: Gaussian Mixture Models
 library(ClusterR)
 
-opt_gmm = Optimal_Clusters_GMM(matrix_5000, max_clusters = 30, criterion = "BIC", 
+opt_gmm = Optimal_Clusters_GMM(matrix_5000, max_clusters = 7, criterion = "BIC", 
                                
                                dist_mode = "maha_dist", seed_mode = "random_subset",
                                
@@ -61,3 +61,24 @@ library(factoextra)
 km2 <- kmeans(matrix_5000, centers = 5, nstart = 100)
 fviz_nbclust(matrix_5000, kmeans, method ="wss")
 fviz_cluster(kmeans(matrix_5000, centers = 5, nstart = 100), data = matrix_5000)
+
+#Method 4: hclust
+library(tidyverse)  
+library(cluster)    
+library(factoextra) 
+library(dendextend) 
+
+matrix_5000 <- na.omit(matrix_5000)
+matrix_5000 <- scale(matrix_5000)
+
+d <- dist(matrix_5000, method = "euclidean")
+
+hc1 <- hclust(d, method = "single" )
+
+plot(hc1)
+
+
+#Method 5: PAM
+library(cluster)
+pamx <- pam(matrix_5000, 7)
+
