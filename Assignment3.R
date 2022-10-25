@@ -70,7 +70,8 @@ diff_exp <- read_xlsx("./deseq_df.xlsx")
 
 #Get the table of gene names and their expression
 gene_names <- expression_matrix[,1, drop = FALSE]
-diff_exp <- cbind(gene_names, deseq_df)
+diff_exp <- cbind(gene_names, diff_exp)
+#Possible error fixed, had deseq_df instead of diff_exp in the cbind
 
 #Sort by increasing p value
 diff_exp <- arrange(diff_exp, pvalue)
