@@ -12,6 +12,7 @@ library(tidyverse)
 library(cluster)    
 library(factoextra) 
 library(dendextend) 
+library(ggalluvial)
 
 subset_matrix <- function(num, diff_exp) {
   #Subset the first # rows
@@ -29,21 +30,21 @@ subset_matrix <- function(num, diff_exp) {
   return(matrix)
 }
 
-k_means <- function(matrix) {
+k_means <- function(matrix, k_chosen) {
   #Method 1: k means
-  
-  km2 <- kmeans(matrix_5000, centers = 2, nstart = 100)
-  fviz_nbclust(matrix_5000, kmeans, method ="wss")
-  fviz_cluster(kmeans(matrix_5000, centers = 2, nstart = 100), data = matrix_5000)
+
+  km2 <- kmeans(matrix, centers = k_chosen, nstart = 100)
+  fviz_nbclust(matrix, kmeans, method ="wss")
+  fviz_cluster(kmeans(matrix, centers = k_chosen, nstart = 100), data = matrix)
 }
 
 h_clust <- function(matrix) {
   #Method 2: hclust
   
-  matrix_5000 <- na.omit(matrix_5000)
-  matrix_5000 <- scale(matrix_5000)
+  matrix <- na.omit(matrix)
+  matrix <- scale(matrix)
   
-  d <- dist(matrix_5000, method = "euclidean")
+  d <- dist(matrix, method = "euclidean")
   
   hc1 <- hclust(d, method = "complete" )
   
@@ -51,11 +52,11 @@ h_clust <- function(matrix) {
   
 }
 
-PAM <- function(matrix) {
+PAM <- function(matrix, k_chosen) {
   #Method 3: PAM Clustering
   
-  fviz_nbclust(matrix_5000, pam, method ="silhouette")+theme_minimal()
-  pamResult <-pam(matrix_5000, k = 2)
+  fviz_nbclust(matrix, pam, method ="silhouette")+theme_minimal()
+  pamResult <-pam(matrix, k = k_chosen)
   fviz_cluster(pamResult, 
                palette =c("#007892","#D9455F"),
                ellipse.type ="euclid",
@@ -74,17 +75,100 @@ diff_exp <- cbind(gene_names, deseq_df)
 #Sort by increasing p value
 diff_exp <- arrange(diff_exp, pvalue)
 
+
+#Run with 5000 genes all three clusters methods
 #get matrix with only 5000 genes
 matrix_5000 <- subset_matrix(5000, diff_exp)
 
-#k_means function
-k_means(matrix_5000)
+#k_means function, enter matrix and k value
+k_means(matrix_5000, 2)
 
 #h_clust function
 h_clust(matrix_5000)
 
 #PAM function
-PAM(matrix_5000)
+PAM(matrix_5000,2)
+
+
+#Run with 10000 genes all three clusters methods
+#get matrix with only 5000 genes
+matrix_10000 <- subset_matrix(10000, diff_exp)
+
+#k_means function, enter matrix and k value
+k_means(matrix_10000, 2)
+
+#h_clust function
+h_clust(matrix_10000)
+
+#PAM function
+PAM(matrix_10000,2)
+
+
+#Run with 1000 genes all three clusters methods
+#get matrix with only 5000 genes
+matrix_1000 <- subset_matrix(1000, diff_exp)
+
+#k_means function, enter matrix and k value
+k_means(matrix_1000, 2)
+
+#h_clust function
+h_clust(matrix_1000)
+
+#PAM function
+PAM(matrix_1000, 2)
+
+
+#Run with 100 genes all three clusters methods
+#get matrix with only 5000 genes
+matrix_100 <- subset_matrix(100, diff_exp)
+
+#k_means function, enter matrix and k value
+k_means(matrix_100, 2)
+
+#h_clust function
+h_clust(matrix_100)
+
+#PAM function
+PAM(matrix_100, 2)
+
+
+#Run with 10 genes all three clusters methods
+#get matrix with only 5000 genes
+matrix_10 <- subset_matrix(10, diff_exp)
+
+#k_means function, enter matrix and k value
+k_means(matrix_10, 2)
+
+#h_clust function
+h_clust(matrix_10)
+
+#PAM function
+PAM(matrix_10, 2)
+
+
+
+
+#Alluvial Diagram: 10, 100, 1000, 10000 genes vs clustering methods? 
+#amount of clusters? 
+
+cluster_data <- data.frame (k_value = c("2", "2", "2","2", "2", "2","2", "2", "2","2", "2", "2"), 
+              clust_method = c("k means","k means","k means","k means","hclust","hclust","hclust",
+                               "hclust","PAM Clustering", "PAM Clustering","PAM Clustering", 
+                               "PAM Clustering"), num_genes = c("10", "100", "1000", "10000", "10", "100"
+                                                                , "1000", "10000",
+                                                                "10", "100", "1000", "10000")
+)
+
+is_alluvia_form(as.data.frame(cluster_data), axes = 1:3, silent = TRUE)
+
+ggplot(as.data.frame(cluster_data),
+       aes(axis1 = num_genes, axis2 = clust_method)) +
+  geom_alluvium(aes(fill = k_value), width = 1/12) +
+  geom_stratum(width = 1/12, fill = "black", color = "grey") +
+  geom_label(stat = "stratum", aes(label = after_stat(stratum))) +
+  scale_x_discrete(limits = c("Number of Genes", "Cluster Method"), expand = c(.05, .05)) +
+  scale_fill_brewer(type = "qual", palette = "Set1") +
+  ggtitle("Number of Clusters Found Per Cluster Method and Number of Genes")
 
 
 #Not using these
