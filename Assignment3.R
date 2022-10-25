@@ -23,9 +23,12 @@ subset_matrix <- function(num, diff_exp) {
   
   expression_matrix <- inner_join(significant_genes,expression_matrix, by = "Gene")
   matrix <- expression_matrix
+  row_names <- matrix[,1]
+  rownames(matrix) <- row_names
+  
   matrix<-matrix[,-1] # delete column of genes
-  colnames(matrix)<-NULL 
-  matrix <- as.matrix(matrix)
+  #colnames(matrix)<-NULL 
+  #matrix <- as.matrix(matrix)
   matrix <- t(matrix)
   return(matrix)
 }
