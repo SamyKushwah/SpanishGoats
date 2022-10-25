@@ -151,7 +151,7 @@ PAM(matrix_10, 2)
 #Alluvial Diagram: 10, 100, 1000, 10000 genes vs clustering methods? 
 #amount of clusters? 
 
-cluster_data <- data.frame (k_value = c("2", "2", "2","2", "2", "2","2", "2", "2","2", "2", "2"), 
+cluster_data <- data.frame (num_clusters = c("2", "2", "2","2", "2", "2","2", "2", "2","2", "2", "2"), 
               clust_method = c("k means","k means","k means","k means","hclust","hclust","hclust",
                                "hclust","PAM Clustering", "PAM Clustering","PAM Clustering", 
                                "PAM Clustering"), num_genes = c("10", "100", "1000", "10000", "10", "100"
@@ -163,12 +163,12 @@ is_alluvia_form(as.data.frame(cluster_data), axes = 1:3, silent = TRUE)
 
 ggplot(as.data.frame(cluster_data),
        aes(axis1 = num_genes, axis2 = clust_method)) +
-  geom_alluvium(aes(fill = k_value), width = 1/12) +
+  geom_alluvium(aes(fill = num_clusters), width = 1/12) +
   geom_stratum(width = 1/12, fill = "black", color = "grey") +
   geom_label(stat = "stratum", aes(label = after_stat(stratum))) +
   scale_x_discrete(limits = c("Number of Genes", "Cluster Method"), expand = c(.05, .05)) +
   scale_fill_brewer(type = "qual", palette = "Set1") +
-  ggtitle("Number of Clusters Found Per Cluster Method and Number of Genes")
+  ggtitle("Number of Clusters Found In Each Cluster Method and Number of Genes")
 
 
 #Not using these
