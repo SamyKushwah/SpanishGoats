@@ -24,45 +24,23 @@ significant_genes <- data.frame(diff_exp$Gene)
 colnames(significant_genes)[1] = "Gene"
 
 expression_matrix_5000 <- inner_join(significant_genes,expression_matrix, by = "Gene")
-
-
-
-
-
-#Method 1:ConsensusClusterPlus
-library("ConsensusClusterPlus")
-
 matrix_5000 <- expression_matrix_5000
 matrix_5000<-matrix_5000[,-1] # delete column of genes
 colnames(matrix_5000)<-NULL 
 matrix_5000 <- as.matrix(matrix_5000)
+matrix_5000 <- t(matrix_5000)
 
-rcc = ConsensusClusterPlus(matrix_5000,maxK=7,reps=1000,pItem=0.8,pFeature=1,
-                           title="example",distance="pearson",clusterAlg="hc")
-#resICL = calcICL(rcc,title="example")
-calcICL(rcc,title="untitled_consensus_cluster")
 
-#Method 2: Gaussian Mixture Models
-library(ClusterR)
-
-opt_gmm = Optimal_Clusters_GMM(matrix_5000, max_clusters = 7, criterion = "BIC", 
-                               
-                               dist_mode = "maha_dist", seed_mode = "random_subset",
-                               
-                               km_iter = 10, em_iter = 10, var_floor = 1e-10, 
-                               
-                               plot_data = T)
-
-#Method 3: k means
+#Method 1: k means
 library(ggplot2)
 library(stats)
 library(factoextra)
 
-km2 <- kmeans(matrix_5000, centers = 5, nstart = 100)
+km2 <- kmeans(matrix_5000, centers = 2, nstart = 100)
 fviz_nbclust(matrix_5000, kmeans, method ="wss")
-fviz_cluster(kmeans(matrix_5000, centers = 5, nstart = 100), data = matrix_5000)
+fviz_cluster(kmeans(matrix_5000, centers = 2, nstart = 100), data = matrix_5000)
 
-#Method 4: hclust
+#Method 2: hclust
 library(tidyverse)  
 library(cluster)    
 library(factoextra) 
@@ -73,12 +51,37 @@ matrix_5000 <- scale(matrix_5000)
 
 d <- dist(matrix_5000, method = "euclidean")
 
-hc1 <- hclust(d, method = "single" )
+hc1 <- hclust(d, method = "complete" )
 
 plot(hc1)
 
 
-#Method 5: PAM
+#Method 3: PAM Clustering
 library(cluster)
-pamx <- pam(matrix_5000, 7)
+
+fviz_nbclust(matrix_5000, pam, method ="silhouette")+theme_minimal()
+pamResult <-pam(matrix_5000, k = 2)
+fviz_cluster(pamResult, 
+             palette =c("#007892","#D9455F"),
+             ellipse.type ="euclid",
+             repel =TRUE,
+             ggtheme =theme_minimal())
+
+#Not using these
+#Method 4:ConsensusClusterPlus
+#library("ConsensusClusterPlus")
+
+#rcc = ConsensusClusterPlus(matrix_5000,maxK=1,reps=50,pItem=0.8,pFeature=1,
+#                           title="example",distance="pearson",clusterAlg="hc")
+
+#resICL = calcICL(rcc,title="example")
+#calcICL(rcc,title="untitled_consensus_cluster")
+
+#Method 5: Gaussian Mixture Models
+#library(ClusterR)
+
+#opt_gmm = Optimal_Clusters_GMM(matrix_5000, max_clusters = 9, criterion = "BIC", 
+#                               dist_mode = "maha_dist", seed_mode = "random_subset",
+#                               km_iter = 10, em_iter = 10, var_floor = 1e-10, 
+#                               plot_data = T)
 
