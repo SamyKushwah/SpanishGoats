@@ -61,6 +61,7 @@ Tests <- c("Samples/Kmeans", "Samples/Hclust", "Samples/PAM",
            "Kmeans/Hclust", "Kmeans/PAM", "Hclust/PAM")
 
 #Statistical test results table
-stat_test_results <- matrix(Tests, nrow=6, ncol=1)
-stat_test_results <- cbind(stat_test_results,p_values)
-stat_test_results <- cbind(stat_test_results,p_values_adjusted)
+stat_test_results <- data.frame(Tests,p_values,p_values_adjusted)
+
+#Enrichment plot
+pairs(data1[2:3], pch = 21)
