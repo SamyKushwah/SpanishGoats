@@ -1,3 +1,6 @@
+require(lattice)
+require(ggplot2)
+
 #Read meta data and get grouped samples
 Samples <- read.csv("./gse_matrix2.csv", header = TRUE)
 Samples <- Samples[,-c(1:40)]
