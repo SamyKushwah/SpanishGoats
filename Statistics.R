@@ -64,4 +64,4 @@ Tests <- c("Samples/Kmeans", "Samples/Hclust", "Samples/PAM",
 stat_test_results <- data.frame(Tests,p_values,p_values_adjusted)
 
 #Enrichment plot
-pairs(data1[2:3], pch = 21)
+pairs(stat_test_results[2:3], pch = 21)
